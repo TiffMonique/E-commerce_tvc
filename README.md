@@ -46,3 +46,9 @@ To get started with E-commerce, follow these steps:
     ```bash
     npm run dev
    ```
+
+7. Go to the different routes
+    ```bash
+    http://localhost:3000/home
+    http://localhost:3000/admin
+   ```
