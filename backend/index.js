@@ -8,7 +8,11 @@ import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+}));
 dotenv.config();
 
 const PORT = process.env.PORT || 7000;

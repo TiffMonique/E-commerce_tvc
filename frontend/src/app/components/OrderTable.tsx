@@ -1,16 +1,16 @@
 'use client'
 import React, { useState } from 'react'
-import { Order } from '../interfaces/orders';
 import Pagination from './Pagination';
 import { IoCaretDownCircleOutline } from 'react-icons/io5';
 import { FiChevronDown } from 'react-icons/fi';
+import { FormattedDate } from './FormattedDate';
+import useOrders from '../hooks/useOrders';
+import { Order } from '../interfaces/orders';
 
 
-interface OrderTableProps {
-  orders: Order[];
-}
+const OrderTable = () => {
+  const { orders } = useOrders();
 
-const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
   const totalItems = orders.length;
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -38,10 +38,10 @@ const OrderTable: React.FC<OrderTableProps> = ({ orders }) => {
             </tr>
           </thead>
           <tbody>
-            {currentOrders.map((order) => (
+            {currentOrders.map((order: Order) => (
               <tr key={order.orderID} className="border-b">
                 <td className="py-3 px-6">{order.orderID}</td>
-                <td className="py-3 px-5">{order.createdAt}</td>
+                <td className="py-3 px-5"><FormattedDate dateTime={order.createdAt} /></td>
                 <td className="py-3 px-5">{order.client}</td>
                 <td className="py-3 px-5">${order.total.toFixed(2)}</td>
                 <td className="py-3 px-5">

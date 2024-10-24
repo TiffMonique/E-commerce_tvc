@@ -1,55 +1,7 @@
+'use client';
 import React from 'react'
 import OrderTable from '../components/OrderTable'
 import Card from '../components/Card';
-
-
-// mockOrders.ts
-const mockOrders = [
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-
-  {
-    orderID: "ORD001",
-    createdAt: "2024-10-20",
-    client: "Juan Pérez",
-    total: 150.00,
-    status: "Completado",
-  },
-
-];
 
 const page = () => {
   return (
@@ -60,7 +12,7 @@ const page = () => {
         </li>
       </ul>
       <Card>
-        <OrderTable orders={mockOrders} />
+        <OrderTable />
       </Card>
     </div>
   )

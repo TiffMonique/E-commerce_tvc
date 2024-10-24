@@ -1,3 +1,4 @@
+'use client';
 import Card from '@/app/components/Card';
 import ProductTable from '@/app/components/ProductTable'
 import React from 'react'
