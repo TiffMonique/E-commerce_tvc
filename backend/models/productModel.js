@@ -12,7 +12,7 @@ const productSchema = new mongoose.Schema({
     default: Date.now,
   },
   category: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
     ref: "Category",
     required: true,
   },

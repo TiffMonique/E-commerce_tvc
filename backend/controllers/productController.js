@@ -1,15 +1,21 @@
 import Product from "../models/productModel.js";
+import Category from "../models/categoryModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { category, price, description, image, stock } = req.body;
+    const { category: categoryId, price, description, image, stock } = req.body;
 
-    if (!category || !price || !description || !image || stock === undefined) {
+    if (!categoryId || price === undefined || !description || !image || stock === undefined) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
+    const existingCategory = await Category.findOne({ id: categoryId });
+    if (!existingCategory) {
+      return res.status(400).json({ message: "Category does not exist." });
+    }
+
     const newProduct = new Product({
-      category,
+      category: categoryId,
       price,
       description,
       image,
@@ -20,7 +26,7 @@ export const addProduct = async (req, res) => {
 
     return res.status(201).json(newProduct);
   } catch (error) {
-    console.error("Error adding product:", error);
+    console.error("Error adding product:", error.message);
     return res.status(500).json({ message: "Server error, please try again later." });
   }
 };
@@ -31,7 +37,7 @@ export const getAllProducts = async (req, res) => {
 
     const filter = category ? { category } : {};
 
-    const products = await Product.find(filter).populate("category").sort({ createdAt: -1 });
+    const products = await Product.find(filter).sort({ createdAt: -1 });
     return res.status(200).json(products);
   } catch (error) {
     console.error("Error fetching products:", error);

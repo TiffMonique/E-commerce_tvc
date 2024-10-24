@@ -3,9 +3,9 @@ import { createOrder, deleteOrder, getAllOrders, updateOrder } from "../controll
 
 const orderRoutes = express.Router();
 
-route.post("/order", createOrder);
-route.get("/orders", getAllOrders);
-route.delete("/:id", deleteOrder);
-route.put("/:id", updateOrder);
+orderRoutes.post("/order", createOrder);
+orderRoutes.get("/orders", getAllOrders);
+orderRoutes.delete("/:id", deleteOrder);
+orderRoutes.put("/:id", updateOrder);
 
 export default orderRoutes;
