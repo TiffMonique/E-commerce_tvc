@@ -5,9 +5,9 @@ import Category from "../models/categoryModel.js";
 dotenv.config();
 
 const categories = [
-  { name: "Hogar" },
-  { name: "Jardinería" },
-  { name: "Electrodomésticos" },
+  { id: "CAT-001", name: "Hogar" },
+  { id: "CAT-002", name: "Jardinería" },
+  { id: "CAT-003", name: "Electrodomésticos" },
 ];
 
 const seedCategories = async () => {
