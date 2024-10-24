@@ -5,6 +5,8 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+    default: () => `ORD-${Math.floor(1000 + Math.random() * 9000)}`,
+
   },
   createdAt: {
     type: Date,

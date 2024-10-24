@@ -41,12 +41,6 @@ export const createOrder = async (req, res) => {
   }
 };
 
-
-const generateOrderID = () => {
-  const randomID = Math.floor(1000 + Math.random() * 9000);
-  return `ORD-${randomID}`;
-};
-
 export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find();
