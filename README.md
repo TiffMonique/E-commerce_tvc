@@ -31,23 +31,27 @@ To get started with E-commerce, follow these steps:
     ```bash
     npm start
    ```
+5. Run the script
+   ```bash
+   node scripts/seedCategories.js
+   ```
 
-5. Navigate to the frontend directory:
+6. Navigate to the frontend directory:
    ```bash
     cd frontend
     ```
 
-6. Install the required dependencies
+7. Install the required dependencies
     ```bash
     npm i
    ```
 
-7. Start the app
+8. Start the app
     ```bash
     npm run dev
    ```
 
-7. Go to the different routes
+9. Go to the different routes
     ```bash
     http://localhost:3000/home
     http://localhost:3000/admin
