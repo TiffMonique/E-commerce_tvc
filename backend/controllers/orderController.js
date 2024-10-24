@@ -2,15 +2,32 @@ import Order from "../models/orderModel.js";
 
 export const createOrder = async (req, res) => {
   try {
-    const { client, total } = req.body;
+    let { client, total } = req.body;
 
-    if (!client || !total) {
-      return res.status(400).json({ message: "Client name and total are required." });
+    const clients = [
+      "Juan Pérez",
+      "María González",
+      "Carlos López",
+      "Ana Fernández",
+      "Luis Martínez",
+      "Sofía Rodríguez",
+      "Jorge Sánchez",
+      "Laura Torres",
+      "David Ramírez",
+      "Isabel Díaz",
+    ];
+
+    if (!client) {
+      client = clients[Math.floor(Math.random() * clients.length)];
+    }
+
+    if (!total) {
+      return res.status(400).json({ message: "Total is required." });
     }
 
     const newOrder = new Order({
       orderID: generateOrderID(),
-      client: client || "Cliente genérico",
+      client: client,
       total: total,
       status: "Pending",
     });
@@ -23,6 +40,7 @@ export const createOrder = async (req, res) => {
     return res.status(500).json({ message: "Server error, please try again later." });
   }
 };
+
 
 const generateOrderID = () => {
   const randomID = Math.floor(1000 + Math.random() * 9000);
