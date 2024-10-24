@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import dotenv from "dotenv";
 import cors from "cors";
-import router from "./routes/orderRoutes.js";
+import orderRoutes from "./routes/orderRoutes.js";
+import productRoutes from "./routes/productRoutes.js";
 
 const app = express();
 app.use(bodyParser.json());
@@ -23,5 +24,7 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-app.use("/api", router);
+app.use("/api", orderRoutes);
+app.use("/api", productRoutes);
+
 

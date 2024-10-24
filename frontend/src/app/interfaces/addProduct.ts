@@ -4,7 +4,7 @@ export interface AddProductProps {
     category: string;
     price: number;
     quantity: number; 
-  description: string;
+    description: string;
     stock?: number;
     image: string; 
 }
