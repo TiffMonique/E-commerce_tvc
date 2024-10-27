@@ -1,42 +1,51 @@
-import { useState } from "react";
-import { useFormik } from "formik";
-import { productSchema } from "../schemas/productSchema";
 import useModal from "./useModal";
-import { showSuccess } from "./useNotifications";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../store";
+import { useGetProductsQuery } from "../store/api/enpoints/ProductsAPI";
+import { addProduct, setProducts } from "../store/products/productSlice";
+import { useEffect } from "react";
+import { useFormik } from "formik";
 import { AddProductProps } from "../interfaces/addProduct";
-
-export const mockProducts = [
-    { id: 'A1S1', name: "Producto 1", category: "Categoría A", price: 100, quantity: 10, description: "Descripción del producto 1", image: "url-del-imagen-1" },
-    { id: 'A1S2', name: "Producto 2", category: "Categoría B", price: 200, quantity: 5, description: "Descripción del producto 2", image: "url-del-imagen-2" },
-];
+import { productSchema } from "../schemas/productSchema";
+import { showSuccess } from "./useNotifications";
+import { v4 as uuidv4 } from "uuid"; 
 
 export const useProducts = () => {
   
-    const [products, setProducts] = useState(mockProducts);
+    const products = useSelector((state: RootState) => state.product.products); 
+    const dispatch = useDispatch();
     const [showAddProduct, toggleAddProduct] = useModal();
     const [showEditProduct, toggleEditProduct] = useModal();
-   // const [toEditProduct, setToEditProduct] = useState(null);
+    // const [toEditProduct, setToEditProduct] = useState(null);
+    
+    const { data: productsFetched, isLoading } = useGetProductsQuery();
+
+  useEffect(() => {
+    if (productsFetched) {
+      dispatch(setProducts(productsFetched));
+    }
+  }, [productsFetched, dispatch]);
 
     const addProductFormik = useFormik<AddProductProps>({
         initialValues: {
-            id: "A1S1",
+            id: uuidv4(),
             name: '',
             category: '',
             price: 0,
             quantity: 0,
             description: '',
-            image: ''
+            image: null
         },
         onSubmit: (values, actions) => {
             const newProduct = {
                 ...values,
             };
 
-            setProducts(prev => [...prev, newProduct]);
+            dispatch(addProduct(newProduct)); 
             actions.resetForm();
             toggleAddProduct();
 	          showSuccess('Product created success');        },
-        validationSchema: productSchema // Asegúrate de que tengas un esquema de validación
+        validationSchema: productSchema 
     });
 
     // const editProductFormik = useFormik({
@@ -73,9 +82,10 @@ export const useProducts = () => {
 
     return {
         products,
+        isLoading,
         showAddProduct,
         showEditProduct,
-        addProductFormik,
+       addProductFormik,
        // editProductFormik,
        // handleEditProduct,
         toggleAddProduct,

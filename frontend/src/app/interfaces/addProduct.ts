@@ -6,5 +6,5 @@ export interface AddProductProps {
     quantity: number; 
     description: string;
     stock?: number;
-    image: string; 
+    image: File | null; 
 }

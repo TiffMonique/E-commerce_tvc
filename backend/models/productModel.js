@@ -5,15 +5,9 @@ const productSchema = new mongoose.Schema({
     type: String,
     unique: true,
     required: true,
-    default: () => `PROD-${Math.floor(1000 + Math.random() * 9000)}`,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-  category: {
+  name: {
     type: String,
-    ref: "Category",
     required: true,
   },
   price: {
@@ -26,7 +20,7 @@ const productSchema = new mongoose.Schema({
     maxlength: 130,
   },
   image: {
-    type: String,
+    type: Buffer,
     required: true,
   },
   stock: {

@@ -1,7 +1,6 @@
 'use client';
 import { store } from '../store';
 
-import Navbar from '../components/Navbar';
 import Sidebar from '../components/Sidebar';
 import localFont from 'next/font/local';
 import '../styles/globals.css';
@@ -30,10 +29,9 @@ export default function AdminLayout({
       >
         <Provider store={store}>
           <section>
-            <Navbar />
             <div className="flex">
               <Sidebar />
-              <main className="ml-64 w-full p-4">
+              <main className="md:ml-64 w-full p-4">
                 {children}
               </main>
             </div>

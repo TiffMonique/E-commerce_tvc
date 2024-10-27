@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import orderRoutes from "./routes/orderRoutes.js";
 import productRoutes from "./routes/productRoutes.js";
+import categorieRoutes from "./routes/categoryRoutes.js";
 
 const app = express();
 app.use(bodyParser.json());
@@ -30,5 +31,6 @@ mongoose
 
 app.use("/api", orderRoutes);
 app.use("/api", productRoutes);
+app.use("/api", categorieRoutes)
 
 

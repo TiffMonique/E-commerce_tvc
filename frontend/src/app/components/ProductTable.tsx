@@ -3,25 +3,23 @@ import React, { useState } from 'react';
 import { FiEdit } from 'react-icons/fi';
 import { HiOutlineTrash } from 'react-icons/hi';
 import Pagination from './Pagination';
-import { AddProductProps } from '../interfaces/addProduct';
+import { useProducts } from '../hooks/useProducts';
 
-interface ProductTableProps {
-  products: AddProductProps[];
-}
 
-const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
-  const totalItems = products.length; // Total de productos
-  const itemsPerPage = 10; // Productos por página
+const ProductTable = () => {
+  const { products } = useProducts();
+
+  const totalItems = products.length;
+  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
-  // Calcular los productos a mostrar en la página actual
-  const indexOfLastProduct = currentPage * itemsPerPage; // Índice del último producto
-  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage; // Índice del primer producto
-  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct); // Obtener solo los productos de la página actual
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
 
   return (
     <>
@@ -46,7 +44,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ products }) => {
                 <td className="py-3 px-4">{product.category}</td>
                 <td className="py-3 px-4">${product.price}</td>
                 <td className="py-3 px-4">{product.description}</td>
-                <td className="py-3 px-4">{product.stock}</td>
+                <td className="py-3 px-4">{product.quantity}</td>
                 <td className="py-3 px-4">
                   <div className='flex items-center space-x-2'>
                     <button className="bg-primary text-xs text-white px-3 py-1 rounded-lg">

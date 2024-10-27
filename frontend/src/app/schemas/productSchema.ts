@@ -1,7 +1,7 @@
 import * as Yup from 'yup';
 
 export const productSchema = Yup.object().shape({
-    id: Yup.number()
+    id: Yup.string() 
         .required('El ID es obligatorio'),
     name: Yup.string()
         .required('El nombre es obligatorio')
@@ -16,9 +16,20 @@ export const productSchema = Yup.object().shape({
         .required('La cantidad es obligatoria')
         .min(0, 'La cantidad no puede ser negativa'),
     description: Yup.string()
-        .optional() // Puede no ser requerido
+        .optional() 
         .max(500, 'La descripción no puede superar los 500 caracteres'),
-    image: Yup.string()
-        .url('La URL de la imagen no es válida') // Asegura que sea una URL válida
-        .optional() // Puede no ser requerido
+     image: Yup.mixed()
+        .required('La imagen es obligatoria')
+        .test("fileSize", "El archivo es demasiado grande", (value) => {
+            if (value) {
+                return (value as File).size <= 5000000; 
+            }
+            return true;
+        })
+        .test("fileType", "El formato del archivo no es válido. Solo se permiten imágenes (jpeg, jpg, png).", (value) => {
+            if (value) {
+                return ['image/jpeg', 'image/jpg', 'image/png'].includes((value as File).type);
+            }
+            return true;
+        })
 });

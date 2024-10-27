@@ -3,9 +3,9 @@ import Category from "../models/categoryModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { category: categoryId, price, description, image, stock } = req.body;
+    const { category: categoryId, name, price, description, image, stock } = req.body;
 
-    if (!categoryId || price === undefined || !description || !image || stock === undefined) {
+    if (!categoryId || !name || price === undefined || !description || !image || stock === undefined) {
       return res.status(400).json({ message: "All fields are required." });
     }
 
@@ -16,6 +16,7 @@ export const addProduct = async (req, res) => {
 
     const newProduct = new Product({
       category: categoryId,
+      name,
       price,
       description,
       image,

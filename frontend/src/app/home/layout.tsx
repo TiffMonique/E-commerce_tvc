@@ -6,8 +6,8 @@ import "../styles/globals.css";
 
 import Footer from "../components/Footer";
 import Header from "../components/Header";
-// import { Provider } from "react-redux";
-// import { store } from "../store";
+import { Provider } from "react-redux";
+import { store } from "../store";
 
 
 const geistSans = localFont({
@@ -36,18 +36,18 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-
-        <Header />
-        <main className="">
-          <ToastContainer
-            limit={2}
-            position="bottom-right"
-            hideProgressBar={true}
-            draggable
-          />
-          {children}</main>
-        <Footer />
-
+        <Provider store={store}>
+          <Header />
+          <main className="">
+            <ToastContainer
+              limit={2}
+              position="bottom-right"
+              hideProgressBar={true}
+              draggable
+            />
+            {children}</main>
+          <Footer />
+        </Provider>
       </body>
     </html>
   );
