@@ -28,7 +28,7 @@ export const useProducts = () => {
 
     const addProductFormik = useFormik<AddProductProps>({
         initialValues: {
-            id: uuidv4(),
+            id:uuidv4().substring(0,13),
             name: '',
             category: '',
             price: 0,
