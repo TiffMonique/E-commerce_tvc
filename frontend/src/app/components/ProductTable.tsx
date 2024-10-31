@@ -4,10 +4,20 @@ import { FiEdit } from 'react-icons/fi';
 import { HiOutlineTrash } from 'react-icons/hi';
 import Pagination from './Pagination';
 import { useProducts } from '../hooks/useProducts';
+import EditProduct from './EditProduct';
 
 
 const ProductTable = () => {
-  const { products } = useProducts();
+  const {
+    products,
+    showEditProduct,
+    editProductFormik,
+
+    handleDeleteProduct,
+    handleEditProduct,
+    toggleEditProduct,
+  } = useProducts();
+
 
   const totalItems = products.length;
   const itemsPerPage = 10;
@@ -20,6 +30,12 @@ const ProductTable = () => {
   const indexOfLastProduct = currentPage * itemsPerPage;
   const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
   const currentProducts = products.slice(indexOfFirstProduct, indexOfLastProduct);
+
+  const onDeleteProduct = async (id: string) => {
+    if (window.confirm('¿Estás seguro que deseas eliminar este producto?')) {
+      await handleDeleteProduct(id);
+    }
+  };
 
   return (
     <>
@@ -50,10 +66,12 @@ const ProductTable = () => {
                     <button className="bg-primary text-xs text-white px-3 py-1 rounded-lg">
                       Ver Imagen
                     </button>
-                    <button className='text-xl text-gray-500'>
+                    <button className='text-xl text-gray-500' onClick={() => onDeleteProduct(product.id)}>
                       <HiOutlineTrash />
                     </button>
-                    <button className="text-lg text-gray-500">
+                    <button className="text-lg text-gray-500"
+                      onClick={() => handleEditProduct(product)}
+                    >
                       <FiEdit />
                     </button>
                   </div>
@@ -72,6 +90,11 @@ const ProductTable = () => {
           isAdmin={true}
         />
       </div>
+      <EditProduct
+        isOpen={showEditProduct}
+        toggle={toggleEditProduct}
+        editProductFormik={editProductFormik}
+      />
     </>
   );
 };

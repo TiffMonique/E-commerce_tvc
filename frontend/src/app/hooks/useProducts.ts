@@ -1,11 +1,11 @@
 import useModal from "./useModal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { useAddProductMutation, useGetProductsQuery } from "../store/api/enpoints/ProductsAPI";
+import { useAddProductMutation, useDeleteProductMutation, useEditProductMutation, useGetProductsQuery } from "../store/api/enpoints/ProductsAPI";
 import {  setProducts } from "../store/products/productSlice";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useFormik } from "formik";
-import { AddProductProps } from "../interfaces/addProduct";
+import { ProductProps } from "../interfaces/product";
 import { productSchema } from "../schemas/productSchema";
 import { showSuccess } from "./useNotifications";
 import { v4 as uuidv4 } from "uuid"; 
@@ -17,9 +17,11 @@ export const useProducts = () => {
   
     const [showAddProduct, toggleAddProduct] = useModal();
   const [showEditProduct, toggleEditProduct] = useModal();
-      const [addProduct] = useAddProductMutation(); // Añade esta línea al inicio
+  const [addProduct] = useAddProductMutation(); 
+      const [deleteProduct] = useDeleteProductMutation();
+ const [toEditProduct, setToEditProduct] = useState<ProductProps | null>(null);
+  const [updateProduct] = useEditProductMutation();
 
-    // const [toEditProduct, setToEditProduct] = useState(null);
     
     const { data: productsFetched, isLoading } = useGetProductsQuery();
 
@@ -29,7 +31,7 @@ export const useProducts = () => {
     }
   }, [productsFetched, dispatch]);
 
-    const addProductFormik = useFormik<AddProductProps>({
+    const addProductFormik = useFormik<ProductProps>({
         initialValues: {
             id:uuidv4().substring(0,13),
             name: '',
@@ -44,7 +46,6 @@ export const useProducts = () => {
       },
       
         onSubmit: async (values, actions) => {
-            // Convertir la imagen a base64
             let imageBase64 = null;
             if (values.image) {
                 const reader = new FileReader();
@@ -65,57 +66,75 @@ export const useProducts = () => {
                 ...newProduct,
                 image: imageBase64 as File | null
             };
-
+            toggleAddProduct();
             await addProduct(typedProduct);
             actions.resetForm();
-            toggleAddProduct();
             showSuccess('Product created success');
         },
         validationSchema: productSchema 
     });
+  
+    const handleDeleteProduct = async (id: string) => {
+        try {
+            await deleteProduct(id);
+            showSuccess('Producto eliminado exitosamente');
+        } catch (error) {
+            console.error('Error al eliminar el producto:', error);
+        }
+    };
 
-    // const editProductFormik = useFormik({
-    //     initialValues: {
-    //         id: toEditProduct?.id || '',
-    //         name: toEditProduct?.name || '',
-    //         category: toEditProduct?.category || '',
-    //         price: toEditProduct?.price || 0,
-    //         quantity: toEditProduct?.quantity || 0,
-    //         description: toEditProduct?.description || '',
-    //         image: toEditProduct?.image || ''
-    //     },
-    //     onSubmit: (values, actions) => {
-    //         setProducts(prev =>
-    //             prev.map(product => product.id === values.id ? values : product)
-    //         );
-    //         actions.resetForm();
-    //         toggleEditProduct();
-    //         Notification({ type: "success", message: "Producto editado exitosamente!" });
-    //     },
-    //     enableReinitialize: true,
-    //     validationSchema: productSchema // Asegúrate de que tengas un esquema de validación
-    // });
+   const editProductFormik = useFormik<ProductProps>({
+    initialValues: {
+      id: toEditProduct?.id || '',
+      name: toEditProduct?.name || '',
+      category: toEditProduct?.category || {
+        id: '',
+        name: ''
+      },
+      price: toEditProduct?.price || 0,
+      quantity: toEditProduct?.quantity || 0,
+      description: toEditProduct?.description || '',
+      image: toEditProduct?.image || null
+    },
+    onSubmit: async (values, actions) => {
+      let imageBase64 = null;
+      if (values.image instanceof File) {
+        const reader = new FileReader();
+        imageBase64 = await new Promise((resolve) => {
+          reader.onloadend = () => resolve(reader.result);
+          reader.readAsDataURL(values.image as File);
+        });
+      }
 
-    // const removeProduct = (id) => {
-    //     setProducts(prev => prev.filter(product => product.id !== id));
-    //     Notification({ type: "success", message: "Producto eliminado exitosamente!" });
-    // };
+      const updatedProduct = {
+        ...values,
+        image: imageBase64 || values.image
+      };
 
-    // const handleEditProduct = (product) => {
-    //     setToEditProduct(product);
-    //     toggleEditProduct(true);
-    // };
+      await updateProduct(updatedProduct as ProductProps);
+      actions.resetForm();
+      toggleEditProduct();
+      showSuccess('Producto editado exitosamente!');
+    },
+    enableReinitialize: true,
+    validationSchema: productSchema
+  });
 
+  const handleEditProduct = (product: ProductProps) => {
+    setToEditProduct(product);
+    toggleEditProduct();
+  };
     return {
         products,
         isLoading,
         showAddProduct,
         showEditProduct,
         addProductFormik,
-       // editProductFormik,
-       // handleEditProduct,
+        editProductFormik,
+
+        handleEditProduct,
         toggleAddProduct,
-        toggleEditProduct,
-       // removeProduct
+      toggleEditProduct,
+        handleDeleteProduct ,
     };
 };

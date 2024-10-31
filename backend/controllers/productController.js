@@ -29,8 +29,8 @@ export const addProduct = async (req, res) => {
       description,
       stock,
       image: {
-        data: imageBuffer, // Este es el buffer de la imagen
-        contentType: 'image/png' // Ajusta esto según el tipo de imagen
+        data: imageBuffer,
+        contentType: 'image/png'
       }
     });
 
@@ -75,22 +75,39 @@ export const getAllProducts = async (req, res) => {
 export const editProduct = async (req, res) => {
   try {
     const { productId } = req.params;
-    const updatedData = req.body;
+    const { image, ...restUpdatedData } = req.body;
+
+    let updateObject = { ...restUpdatedData };
+
+    // Procesar la imagen si se proporciona una nueva
+    if (image) {
+      const imageBuffer = Buffer.from(image, 'base64');
+      updateObject.image = {
+        data: imageBuffer,
+        contentType: 'image/png'
+      };
+    }
 
     const updatedProduct = await Product.findOneAndUpdate(
       { productId },
-      updatedData,
+      updateObject,
       { new: true, runValidators: true }
     );
 
     if (!updatedProduct) {
-      return res.status(404).json({ message: "Product not found." });
+      return res.status(404).json({ message: "Producto no encontrado." });
     }
 
-    return res.status(200).json(updatedProduct);
+    // Convertir la imagen a base64 para la respuesta
+    const productResponse = updatedProduct.toObject();
+    if (productResponse.image && productResponse.image.data) {
+      productResponse.image = productResponse.image.data.toString('base64');
+    }
+
+    return res.status(200).json(productResponse);
   } catch (error) {
-    console.error("Error updating product:", error);
-    return res.status(500).json({ message: "Server error, please try again later." });
+    console.error("Error actualizando producto:", error);
+    return res.status(500).json({ message: "Error del servidor, por favor intente más tarde." });
   }
 };
 

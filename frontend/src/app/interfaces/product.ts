@@ -1,4 +1,4 @@
-export interface AddProductProps {
+export interface ProductProps {
     id: string;
     name: string;
     category: {
@@ -12,12 +12,4 @@ export interface AddProductProps {
     image: File | null|string |undefined; 
 }
 
-
-export interface ProductProps {
-  name: string;
-  price: number;
-  description: string;
-  stock?: number;
-  image: string; 
-}
 

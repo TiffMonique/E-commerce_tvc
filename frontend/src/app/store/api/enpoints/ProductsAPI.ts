@@ -1,10 +1,10 @@
-import { AddProductProps } from "@/app/interfaces/addProduct";
+import { ProductProps } from "@/app/interfaces/product";
 import { api } from "../api";
 import { Products } from "../Tags/Products";
 
 
-const transformGetOrdersResponse = (responseData: any): AddProductProps[] => {
-  return responseData.map(({ category, price, name, description, image, stock , productId}: any): AddProductProps => ({
+const transformGetOrdersResponse = (responseData: any): ProductProps[] => {
+  return responseData.map(({ category, price, name, description, image, stock , productId}: any): ProductProps => ({
     id: productId,
     name: name,
     category: category,
@@ -17,7 +17,7 @@ const transformGetOrdersResponse = (responseData: any): AddProductProps[] => {
 
 export const ProductsAPI = api.injectEndpoints({
     endpoints: build => ({
-        getProducts: build.query<AddProductProps[], void>({
+        getProducts: build.query<ProductProps[], void>({
             query: () => ({
                 url: "/api/products",
                 method: "GET",
@@ -25,7 +25,7 @@ export const ProductsAPI = api.injectEndpoints({
             providesTags: [Products],
             transformResponse: transformGetOrdersResponse
         }),
-        addProduct: build.mutation<AddProductProps, AddProductProps>({
+        addProduct: build.mutation<ProductProps, ProductProps>({
             query: (
                 { id,
                     category,
@@ -51,11 +51,43 @@ export const ProductsAPI = api.injectEndpoints({
                 }
             },
             invalidatesTags: [Products]
-        })
+        }),
+         deleteProduct: build.mutation<void, string>({
+            query: (productId) => ({
+                url: `/api/product/${productId}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: [Products]
+         }),
+         editProduct: build.mutation<ProductProps, ProductProps>({
+            query: ({
+                id,
+                category,
+                name,
+                price,
+                description,
+                image,
+                quantity
+            }) => ({
+                url: `/api/product/${id}`,
+                method: "PUT",
+                body: {
+                    category,
+                    name,
+                    price,
+                    description,
+                    image,
+                    stock: quantity
+                }
+            }),
+            invalidatesTags: [Products]
+        }),
     })
 });
 
 export const {
     useGetProductsQuery,
-    useAddProductMutation
+    useAddProductMutation,
+    useDeleteProductMutation,
+    useEditProductMutation
 } = ProductsAPI;

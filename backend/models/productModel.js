@@ -21,11 +21,11 @@ const productSchema = new mongoose.Schema({
   },
   image: {
     data: {
-      type: Buffer, // Esto debe ser un Buffer
+      type: Buffer,
       required: true,
     },
     contentType: {
-      type: String, // Esto debe ser un String
+      type: String,
       required: true,
     },
   },

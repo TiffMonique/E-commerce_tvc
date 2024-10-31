@@ -1,10 +1,10 @@
 import React from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
-import { AddProductProps } from "../interfaces/addProduct";
+import { ProductProps } from "../interfaces/product";
 
 
 
-const ProductCard: React.FC<AddProductProps> = ({
+const ProductCard: React.FC<ProductProps> = ({
   name,
   price,
   description,
@@ -22,7 +22,7 @@ const ProductCard: React.FC<AddProductProps> = ({
       <div className="">
         <div className="flex justify-between items-center pt-2">
           <h3 className="text-lg font-semibold">{name}</h3>
-          <span className="text-lg font-semibold">{price}</span>
+          <span className="text-lg font-semibold">${price}</span>
         </div>
         <p className="my-2 text-normal leading-tight text-sm">
           {description || "Descripción no disponible"}
