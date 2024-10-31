@@ -20,8 +20,14 @@ const productSchema = new mongoose.Schema({
     maxlength: 130,
   },
   image: {
-    type: Buffer,
-    required: true,
+    data: {
+      type: Buffer, // Esto debe ser un Buffer
+      required: true,
+    },
+    contentType: {
+      type: String, // Esto debe ser un String
+      required: true,
+    },
   },
   stock: {
     type: Number,

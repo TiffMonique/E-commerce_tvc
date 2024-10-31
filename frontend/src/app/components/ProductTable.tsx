@@ -41,7 +41,7 @@ const ProductTable = () => {
               <tr key={product.id} className="text-center border-b">
                 <td className="py-3 px-4">{product.id}</td>
                 <td className="py-3 px-4">{product.name}</td>
-                <td className="py-3 px-4">{product.category}</td>
+                <td className="py-3 px-4">{product.category?.name}</td>
                 <td className="py-3 px-4">${product.price}</td>
                 <td className="py-3 px-4">{product.description}</td>
                 <td className="py-3 px-4">{product.quantity}</td>

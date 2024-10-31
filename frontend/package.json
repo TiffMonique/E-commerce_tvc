@@ -12,6 +12,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "axios": "^1.7.7",
     "formik": "^2.4.6",
+    "mongoose": "^8.7.3",
     "next": "14.2.15",
     "next-auth": "^4.24.10",
     "react": "^18",

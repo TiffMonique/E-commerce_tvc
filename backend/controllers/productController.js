@@ -3,10 +3,14 @@ import Category from "../models/categoryModel.js";
 
 export const addProduct = async (req, res) => {
   try {
-    const { category: categoryId, name, price, description, image, stock } = req.body;
+    const { productId, category: categoryId, name, price, description, image, stock } = req.body;
 
-    if (!categoryId || !name || price === undefined || !description || !image || stock === undefined) {
+    if (!productId || !categoryId || !name || price === undefined || !description || stock === undefined) {
       return res.status(400).json({ message: "All fields are required." });
+    }
+
+    if (!image) {
+      return res.status(400).json({ message: "Image is required." });
     }
 
     const existingCategory = await Category.findOne({ id: categoryId });
@@ -14,13 +18,20 @@ export const addProduct = async (req, res) => {
       return res.status(400).json({ message: "Category does not exist." });
     }
 
+    // Decodificar la imagen base64
+    const imageBuffer = Buffer.from(image, 'base64');
+
     const newProduct = new Product({
+      productId,
       category: categoryId,
       name,
       price,
       description,
-      image,
       stock,
+      image: {
+        data: imageBuffer, // Este es el buffer de la imagen
+        contentType: 'image/png' // Ajusta esto según el tipo de imagen
+      }
     });
 
     await newProduct.save();
@@ -32,6 +43,7 @@ export const addProduct = async (req, res) => {
   }
 };
 
+
 export const getAllProducts = async (req, res) => {
   try {
     const { category } = req.query;
@@ -39,7 +51,20 @@ export const getAllProducts = async (req, res) => {
     const filter = category ? { category } : {};
 
     const products = await Product.find(filter).sort({ createdAt: -1 });
-    return res.status(200).json(products);
+
+
+    const productsWithBase64Images = products.map(product => {
+      const base64Image = `data:${product.image.contentType};base64,${product.image.data.toString('base64')}`;
+      const cleanedString = base64Image.replace(/dataimage\/pngbase64/, '');
+      const base64 = cleanedString.replace(/^data:image\/(png|jpeg|gif);base64,/, '');
+
+      return {
+        ...product.toObject(),
+        image: base64
+      };
+    });
+
+    return res.status(200).json(productsWithBase64Images);
   } catch (error) {
     console.error("Error fetching products:", error);
     return res.status(500).json({ message: "Server error, please try again later." });

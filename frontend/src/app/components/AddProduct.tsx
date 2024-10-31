@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import { FormikProps } from 'formik';
 import { AddProductProps } from '../interfaces/addProduct';
@@ -15,9 +16,14 @@ const AddProduct = ({ isOpen, addProductFormik, toggle }: Props) => {
 
   if (!isOpen) return null;
 
-  const handleImageChange = (event: any) => {
-    const file = event.target.files[0];
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
     if (file) {
+      // Crear una vista previa de la imagen
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      // Guardar el archivo en formik
       addProductFormik.setFieldValue('image', file);
       setFileName(file.name);
     }
@@ -27,6 +33,11 @@ const AddProduct = ({ isOpen, addProductFormik, toggle }: Props) => {
     event.preventDefault();
     const file = event.dataTransfer.files[0];
     if (file) {
+      // Crear una vista previa de la imagen
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+
+      // Guardar el archivo en formik
       addProductFormik.setFieldValue('image', file);
       setFileName(file.name);
     }
@@ -68,19 +79,19 @@ const AddProduct = ({ isOpen, addProductFormik, toggle }: Props) => {
               id="category"
               name="category"
               className="block w-full mt-1 p-2.5 border border-gray-300 rounded-md"
-              value={addProductFormik.values.category}
+              value={addProductFormik.values.category.id}
               onChange={addProductFormik.handleChange}
               onBlur={addProductFormik.handleBlur}
             >
               <option value="">Selecciona una categoría</option>
               {categories.map((category) => (
-                <option key={category.id} value={category.name}>
+                <option key={category.id} value={category.id}>
                   {category.name}
                 </option>
               ))}
             </select>
             {addProductFormik.touched.category && addProductFormik.errors.category && (
-              <span className="text-red-500 text-sm">{addProductFormik.errors.category}</span>
+              <span className="text-red-500 text-sm">{addProductFormik.errors.category.name}</span>
             )}
           </div>
 

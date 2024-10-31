@@ -1,8 +1,8 @@
 import useModal from "./useModal";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../store";
-import { useGetProductsQuery } from "../store/api/enpoints/ProductsAPI";
-import { addProduct, setProducts } from "../store/products/productSlice";
+import { useAddProductMutation, useGetProductsQuery } from "../store/api/enpoints/ProductsAPI";
+import {  setProducts } from "../store/products/productSlice";
 import { useEffect } from "react";
 import { useFormik } from "formik";
 import { AddProductProps } from "../interfaces/addProduct";
@@ -13,9 +13,12 @@ import { v4 as uuidv4 } from "uuid";
 export const useProducts = () => {
   
     const products = useSelector((state: RootState) => state.product.products); 
-    const dispatch = useDispatch();
+  const dispatch = useDispatch();
+  
     const [showAddProduct, toggleAddProduct] = useModal();
-    const [showEditProduct, toggleEditProduct] = useModal();
+  const [showEditProduct, toggleEditProduct] = useModal();
+      const [addProduct] = useAddProductMutation(); // Añade esta línea al inicio
+
     // const [toEditProduct, setToEditProduct] = useState(null);
     
     const { data: productsFetched, isLoading } = useGetProductsQuery();
@@ -30,21 +33,44 @@ export const useProducts = () => {
         initialValues: {
             id:uuidv4().substring(0,13),
             name: '',
-            category: '',
+            category: {
+              id: '',
+              name: ''
+            },
             price: 0,
             quantity: 0,
             description: '',
             image: null
-        },
-        onSubmit: (values, actions) => {
+      },
+      
+        onSubmit: async (values, actions) => {
+            // Convertir la imagen a base64
+            let imageBase64 = null;
+            if (values.image) {
+                const reader = new FileReader();
+                imageBase64 = await new Promise((resolve) => {
+                    reader.onloadend = () => resolve(reader.result);
+                    reader.readAsDataURL(values.image as File);
+                });
+            }
+          
+        
+          
             const newProduct = {
                 ...values,
+                image: imageBase64 as string
+            };
+          
+          const typedProduct = {
+                ...newProduct,
+                image: imageBase64 as File | null
             };
 
-            dispatch(addProduct(newProduct)); 
+            await addProduct(typedProduct);
             actions.resetForm();
             toggleAddProduct();
-	          showSuccess('Product created success');        },
+            showSuccess('Product created success');
+        },
         validationSchema: productSchema 
     });
 
@@ -85,7 +111,7 @@ export const useProducts = () => {
         isLoading,
         showAddProduct,
         showEditProduct,
-       addProductFormik,
+        addProductFormik,
        // editProductFormik,
        // handleEditProduct,
         toggleAddProduct,

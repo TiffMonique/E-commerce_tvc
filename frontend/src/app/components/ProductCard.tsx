@@ -1,20 +1,27 @@
 import React from "react";
 import { IoAddCircleOutline } from "react-icons/io5";
+import { AddProductProps } from "../interfaces/addProduct";
 
-interface CardProps {
-  title: string;
-  price: string;
-  imgSrc: string;
-  description?: string;
-}
 
-const ProductCard: React.FC<CardProps> = ({ title, price, description, imgSrc }) => {
+
+const ProductCard: React.FC<AddProductProps> = ({
+  name,
+  price,
+  description,
+  image
+}) => {
+
   return (
     <div className="">
-      <img src={imgSrc} alt={title} className="w-full h-48 object-cover rounded-lg" />
+
+      <img
+        src={typeof image === 'string' ? image : ''}
+        alt={name}
+        className="w-full h-48 object-cover rounded-lg"
+      />
       <div className="">
         <div className="flex justify-between items-center pt-2">
-          <h3 className="text-lg font-semibold">{title}</h3>
+          <h3 className="text-lg font-semibold">{name}</h3>
           <span className="text-lg font-semibold">{price}</span>
         </div>
         <p className="my-2 text-normal leading-tight text-sm">
